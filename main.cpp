@@ -64,3 +64,52 @@ int main()
 
     return 0;
 }
+
+//Function definations
+Customer create_customer(const string orders[], int size)
+{
+    string names[NAME_COUNT] = {
+        "Ava", "Liam", "Emma", "Noah", "Sophia",
+        "Mason", "Olivia", "Lucas", "Mia", "Ethan"
+    };
+
+    Customer c;
+    c.name = names[rand() % NAME_COUNT];
+    c.order = orders[rand() % size];
+    return c;
+}
+
+void enqueue(Node*& head, Node*& tail, Customer c)
+{
+    Node* newNode = new Node;
+    newNode->data = c;
+    newNode->next = nullptr;
+
+    if (head == nullptr)
+    {
+        head = newNode;
+        tail = newNode;
+    }
+    else
+    {
+        tail->next = newNode;
+        tail = newNode;
+    }
+}
+
+void print_linked_list(Node* head)
+{
+    if (head == nullptr)
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+
+    Node* current = head;
+    while (current != nullptr)
+    {
+        cout << current->data.name
+             << " (" << current->data.order << ")\n";
+        current = current->next;
+    }
+}
