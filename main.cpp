@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <deque>
 #include <ctime>
 #include <cstdlib>
 
@@ -13,6 +14,7 @@ const int ROUNDS = 10;
 const int INITIAL_CUSTOMERS = 3;
 const int NAME_COUNT = 10;
 const int DRINK_COUNT = 8;
+const int MUFFIN_COUNT = 6;
 
 
 //customer struct
@@ -33,6 +35,7 @@ Customer create_customer(const string orders[], int size);
 void enqueue(Node*& head, Node*& tail, Customer c);
 void dequeue(Node*& head, Node*& tail);
 void print_linked_list(Node* head);
+void print_deque(deque<Customer> d);
 
 // Main
 
@@ -45,15 +48,28 @@ int main()
         "Americano", "Cold Brew", "Cappuccino", "Hot Chocolate"
     };
 
+    string muffins[MUFFIN_COUNT] = {
+       "Blueberry Muffin", "Chocolate Muffin",
+       "Banana Muffin", "Apple Muffin",
+       "Pumpkin Muffin", "Strawberry Muffin"
+    };
+
     // Linked list head/tail
     Node* coffeeHead = nullptr;
     Node* coffeeTail = nullptr;
 
-    //Initialize queue with 3 customers
+    //muffin booth deque
+    deque<Customer> muffinQueue;
+
+    //Initialize both booths with 3 customers
     for (int i = 0; i < INITIAL_CUSTOMERS; i++)
     {
         enqueue(coffeeHead, coffeeTail,
                 create_customer(drinks, DRINK_COUNT));
+        
+        muffinQueue.push_back(
+            create_customer(muffins, MUFFIN_COUNT)
+        );
     }
 
     //Run 10-round simulation
@@ -62,6 +78,9 @@ int main()
         cout << "\n==============================\n";
         cout << "ROUND " << round << "\n";
         cout << "==============================\n";
+
+        //coffee booth
+        cout << "\nCOFFEE BOOTH\n";
 
         // Serve customer
         if (coffeeHead != nullptr)
@@ -95,6 +114,39 @@ int main()
         // Print queue
         cout << "Current Queue:\n";
         print_linked_list(coffeeHead);
+        
+        //Muffin booth
+        cout << "\nMUFFIN BOOTH\n";
+
+        if (!muffinQueue.empty())
+        {
+            cout << "Served: "
+                 << muffinQueue.front().name
+                 << " ordered "
+                 << muffinQueue.front().order << endl;
+
+            muffinQueue.pop_front();
+        }
+        else
+        {
+            cout << "No customers to serve.\n";
+        }
+
+        if (rand() % 2 == 0)
+        {
+            Customer newCustomer =
+                create_customer(muffins, MUFFIN_COUNT);
+
+            muffinQueue.push_back(newCustomer);
+
+            cout << "Joined: "
+                 << newCustomer.name
+                 << " ordered "
+                 << newCustomer.order << endl;
+        }
+
+        cout << "Current Queue:\n";
+        print_deque(muffinQueue);
     }
 
     return 0;
@@ -159,5 +211,20 @@ void print_linked_list(Node* head)
         cout << current->data.name
              << " (" << current->data.order << ")\n";
         current = current->next;
+    }
+}
+
+void print_deque(deque<Customer> d)
+{
+    if (d.empty())
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+
+    for (Customer c : d)
+    {
+        cout << c.name
+             << " (" << c.order << ")\n";
     }
 }
