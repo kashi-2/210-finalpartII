@@ -9,10 +9,11 @@ using namespace std;
 
 //Constants
 
+const int ROUNDS = 10;
+const int INITIAL_CUSTOMERS = 3;
 const int NAME_COUNT = 10;
 const int DRINK_COUNT = 8;
 
-//Structs
 
 //customer struct
 struct Customer {
@@ -30,6 +31,7 @@ struct Node {
 
 Customer create_customer(const string orders[], int size);
 void enqueue(Node*& head, Node*& tail, Customer c);
+void dequeue(Node*& head, Node*& tail);
 void print_linked_list(Node* head);
 
 // Main
@@ -37,12 +39,7 @@ void print_linked_list(Node* head);
 int main()
 {
     srand(time(0));
-
-    string names[NAME_COUNT] = {
-      "Ava", "Liam", "Emma", "Noah", "Sophia",
-        "Mason", "Olivia", "Lucas", "Mia", "Ethan"
-    };
-
+  
     string drinks[DRINK_COUNT] = {
         "Latte", "Mocha", "Espresso", "Tea",
         "Americano", "Cold Brew", "Cappuccino", "Hot Chocolate"
@@ -52,15 +49,53 @@ int main()
     Node* coffeeHead = nullptr;
     Node* coffeeTail = nullptr;
 
-    // Add 3 initial customers
-    for (int i = 0; i < 3; i++)
+    //Initialize queue with 3 customers
+    for (int i = 0; i < INITIAL_CUSTOMERS; i++)
     {
         enqueue(coffeeHead, coffeeTail,
                 create_customer(drinks, DRINK_COUNT));
     }
 
-    cout << "Initial Coffee Booth Queue:\n";
-    print_linked_list(coffeeHead);
+    //Run 10-round simulation
+    for (int round = 1; round <= ROUNDS; round++)
+    {
+        cout << "\n==============================\n";
+        cout << "ROUND " << round << "\n";
+        cout << "==============================\n";
+
+        // Serve customer
+        if (coffeeHead != nullptr)
+        {
+            cout << "Served: "
+                 << coffeeHead->data.name
+                 << " ordered "
+                 << coffeeHead->data.order << endl;
+
+            dequeue(coffeeHead, coffeeTail);
+        }
+        else
+        {
+            cout << "No customers to serve.\n";
+        }
+
+        // 50% chance someone joins
+        if (rand() % 2 == 0)
+        {
+            Customer newCustomer =
+                create_customer(drinks, DRINK_COUNT);
+
+            enqueue(coffeeHead, coffeeTail, newCustomer);
+
+            cout << "Joined: "
+                 << newCustomer.name
+                 << " ordered "
+                 << newCustomer.order << endl;
+        }
+
+        // Print queue
+        cout << "Current Queue:\n";
+        print_linked_list(coffeeHead);
+    }
 
     return 0;
 }
@@ -95,6 +130,19 @@ void enqueue(Node*& head, Node*& tail, Customer c)
         tail->next = newNode;
         tail = newNode;
     }
+}
+
+void dequeue(Node*& head, Node*& tail)
+{
+    if (head == nullptr)
+        return;
+
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+
+        if (head == nullptr)
+            tail = nullptr;
 }
 
 void print_linked_list(Node* head)
