@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <deque>
+#include <vector>
 #include <ctime>
 #include <cstdlib>
 
@@ -15,6 +16,7 @@ const int INITIAL_CUSTOMERS = 3;
 const int NAME_COUNT = 10;
 const int DRINK_COUNT = 8;
 const int MUFFIN_COUNT = 6;
+const int BRACELET_COUNT = 6;
 
 
 //customer struct
@@ -32,10 +34,12 @@ struct Node {
 // Function Prototypes 
 
 Customer create_customer(const string orders[], int size);
+
 void enqueue(Node*& head, Node*& tail, Customer c);
 void dequeue(Node*& head, Node*& tail);
 void print_linked_list(Node* head);
 void print_deque(deque<Customer> d);
+void print_vector(vector<Customer> v);
 
 // Main
 
@@ -54,12 +58,21 @@ int main()
        "Pumpkin Muffin", "Strawberry Muffin"
     };
 
+    string bracelets[BRACELET_COUNT] = {
+        "Rainbow Bracelet", "Heart Bracelet",
+        "Friendship Bracelet", "Glow Bracelet",
+        "Charm Bracelet", "Beaded Bracelet"
+    };
+
     // Linked list head/tail
     Node* coffeeHead = nullptr;
     Node* coffeeTail = nullptr;
 
     //muffin booth deque
     deque<Customer> muffinQueue;
+
+    //Bracelet booth (vector)
+    vector<Customer> braceletQueue;
 
     //Initialize both booths with 3 customers
     for (int i = 0; i < INITIAL_CUSTOMERS; i++)
@@ -69,6 +82,10 @@ int main()
         
         muffinQueue.push_back(
             create_customer(muffins, MUFFIN_COUNT)
+        );
+        
+        braceletQueue.push_back(
+            create_customer(bracelets, BRACELET_COUNT)
         );
     }
 
@@ -144,9 +161,42 @@ int main()
                  << " ordered "
                  << newCustomer.order << endl;
         }
-
+        
         cout << "Current Queue:\n";
         print_deque(muffinQueue);
+    
+        // Bracelet Booth
+        cout << "\nBRACELET BOOTH\n";
+
+        if (!braceletQueue.empty())
+        {
+            cout << "Served: "
+                 << braceletQueue.front().name
+                 << " ordered "
+                 << braceletQueue.front().order << endl;
+
+            braceletQueue.erase(braceletQueue.begin());
+        }
+        else
+        {
+            cout << "No customers to serve.\n";
+        }
+
+        if (rand() % 2 == 0)
+        {
+            Customer newCustomer =
+                create_customer(bracelets, BRACELET_COUNT);
+
+            braceletQueue.push_back(newCustomer);
+
+            cout << "Joined: "
+                 << newCustomer.name
+                 << " ordered "
+                 << newCustomer.order << endl;
+        }
+
+        cout << "Current Queue:\n";
+        print_vector(braceletQueue);
     }
 
     return 0;
@@ -223,6 +273,21 @@ void print_deque(deque<Customer> d)
     }
 
     for (Customer c : d)
+    {
+        cout << c.name
+             << " (" << c.order << ")\n";
+    }
+}
+
+void print_vector(vector<Customer> v)
+{
+    if (v.empty())
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+
+    for (Customer c : v)
     {
         cout << c.name
              << " (" << c.order << ")\n";
