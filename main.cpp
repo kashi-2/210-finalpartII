@@ -4,6 +4,7 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <queue>
 #include <ctime>
 #include <cstdlib>
 
@@ -17,7 +18,7 @@ const int NAME_COUNT = 10;
 const int DRINK_COUNT = 8;
 const int MUFFIN_COUNT = 6;
 const int BRACELET_COUNT = 6;
-
+const int STICKER_COUNT = 6;
 
 //customer struct
 struct Customer {
@@ -40,6 +41,7 @@ void dequeue(Node*& head, Node*& tail);
 void print_linked_list(Node* head);
 void print_deque(deque<Customer> d);
 void print_vector(vector<Customer> v);
+void print_queue(queue<Customer> q);
 
 // Main
 
@@ -64,6 +66,12 @@ int main()
         "Charm Bracelet", "Beaded Bracelet"
     };
 
+    string stickers[STICKER_COUNT] = {
+        "Cat Sticker", "Dog Sticker",
+        "Gaming Sticker", "Space Sticker",
+        "Music Sticker", "Skull Sticker"
+    };
+
     // Linked list head/tail
     Node* coffeeHead = nullptr;
     Node* coffeeTail = nullptr;
@@ -73,6 +81,9 @@ int main()
 
     //Bracelet booth (vector)
     vector<Customer> braceletQueue;
+
+    //Sticker booth (queue)
+    queue<Customer> stickerQueue;
 
     //Initialize both booths with 3 customers
     for (int i = 0; i < INITIAL_CUSTOMERS; i++)
@@ -86,6 +97,10 @@ int main()
         
         braceletQueue.push_back(
             create_customer(bracelets, BRACELET_COUNT)
+        );
+
+        stickerQueue.push(
+            create_customer(stickers, STICKER_COUNT)
         );
     }
 
@@ -197,6 +212,39 @@ int main()
 
         cout << "Current Queue:\n";
         print_vector(braceletQueue);
+    
+        //Sticker Booth
+        cout << "\nSTICKER BOOTH\n";
+
+        if (!stickerQueue.empty())
+        {
+            cout << "Served: "
+                 << stickerQueue.front().name
+                 << " ordered "
+                 << stickerQueue.front().order << endl;
+
+            stickerQueue.pop();
+        }
+        else
+        {
+            cout << "No customers to serve.\n";
+        }
+
+        if (rand() % 2 == 0)
+        {
+            Customer newCustomer =
+                create_customer(stickers, STICKER_COUNT);
+
+            stickerQueue.push(newCustomer);
+
+            cout << "Joined: "
+                 << newCustomer.name
+                 << " ordered "
+                 << newCustomer.order << endl;
+        }
+
+        cout << "Current Queue:\n";
+        print_queue(stickerQueue);
     }
 
     return 0;
@@ -291,5 +339,21 @@ void print_vector(vector<Customer> v)
     {
         cout << c.name
              << " (" << c.order << ")\n";
+    }
+}
+
+void print_queue(queue<Customer> q)
+{
+    if (q.empty())
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+
+    while (!q.empty())
+    {
+        cout << q.front().name
+             << " (" << q.front().order << ")\n";
+        q.pop();
     }
 }
