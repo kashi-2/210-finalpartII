@@ -72,17 +72,13 @@ int main()
         "Music Sticker", "Skull Sticker"
     };
 
-    // Linked list head/tail
+    // Booths
     Node* coffeeHead = nullptr;
     Node* coffeeTail = nullptr;
 
-    //muffin booth deque
+  
     deque<Customer> muffinQueue;
-
-    //Bracelet booth (vector)
     vector<Customer> braceletQueue;
-
-    //Sticker booth (queue)
     queue<Customer> stickerQueue;
 
     //Initialize both booths with 3 customers
@@ -107,12 +103,12 @@ int main()
     //Run 10-round simulation
     for (int round = 1; round <= ROUNDS; round++)
     {
-        cout << "\n==============================\n";
-        cout << "ROUND " << round << "\n";
-        cout << "==============================\n";
+        cout << "\n==================================================\n";
+        cout << "                    ROUND " << round << "\n";
+        cout << "==================================================\n";
 
         //coffee booth
-        cout << "\nCOFFEE BOOTH\n";
+       cout << "\n--- COFFEE BOOTH (Linked List) ---\n";
 
         // Serve customer
         if (coffeeHead != nullptr)
@@ -132,9 +128,7 @@ int main()
         // 50% chance someone joins
         if (rand() % 2 == 0)
         {
-            Customer newCustomer =
-                create_customer(drinks, DRINK_COUNT);
-
+            Customer newCustomer = create_customer(drinks, DRINK_COUNT);
             enqueue(coffeeHead, coffeeTail, newCustomer);
 
             cout << "Joined: "
